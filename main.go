@@ -42,7 +42,7 @@ func init() {
 
 func main() {
 	logrus.Info("starting bot")
-	updates := bot.ListenForWebhook("/InversorTelegramBot/")
+	updates := bot.ListenForWebhook("/")
 
 	for update := range updates {
 		if update.Message != nil {

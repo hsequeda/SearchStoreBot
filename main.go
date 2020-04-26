@@ -23,7 +23,7 @@ func init() {
 
 	bot.Debug = true
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhookWithCert("https://searchstorebot.herokuapp.com/"+bot.Token, ""))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://searchstorebot.herokuapp.com/" + bot.Token))
 	if err != nil {
 		logrus.Error(err)
 	}

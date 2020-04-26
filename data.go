@@ -4,17 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"os"
 	"strings"
-)
-
-// Database properties
-const (
-	driver     = "postgres"
-	dbhost     = "ec2-107-21-98-89.compute-1.amazonaws.com"
-	dbuser     = "gydhbcepmvfojy"
-	dbName     = "dccpn9636r8od"
-	dbpassword = "4ce46cf1c6eabcd1d325dcd0fd31bddf3d573cdc6393f4e5077eead7fa3f53c8"
-	sslmode    = "require"
 )
 
 type stmtConfig struct {
@@ -41,9 +32,16 @@ var data Data
 
 func InitDb() error {
 	var err error
+	driver := os.Getenv("DRIVER")
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbName := os.Getenv("DB_NAME")
+	dbPass := os.Getenv("DB_PASSWORD")
+	sslMode := os.Getenv("SSL_MODE")
+
 	data.Db, err = sql.Open(driver, fmt.Sprintf(
 		"host=%s user=%s dbname=%s password=%s sslmode=%s",
-		dbhost, dbuser, dbName, dbpassword, sslmode))
+		dbHost, dbUser, dbName, dbPass, sslMode))
 	if err != nil {
 		return err
 	}

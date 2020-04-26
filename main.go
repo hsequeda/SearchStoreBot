@@ -22,7 +22,7 @@ func init() {
 
 	bot.Debug = true
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://searchstorebot.herokuapp.com/" + bot.Token))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://searchstorebot.herokuapp.com/"))
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -43,8 +43,8 @@ func init() {
 
 func main() {
 	logrus.Info("starting bot")
-	updates := bot.ListenForWebhook("/" + bot.Token)
-	http.ListenAndServe("0.0.0.0", nil)
+	updates := bot.ListenForWebhook("/")
+	go http.ListenAndServe("0.0.0.0", nil)
 	for update := range updates {
 		if update.Message != nil {
 			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😠"))

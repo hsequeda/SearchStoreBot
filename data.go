@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
 )
@@ -33,11 +34,29 @@ var data Data
 func InitDb() error {
 	var err error
 	driver := os.Getenv("DRIVER")
+	if driver == "" {
+		logrus.Info("driver is empty")
+	}
 	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		logrus.Info("dbHost is empty")
+	}
 	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		logrus.Info("dbUser is empty")
+	}
 	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		logrus.Info("dbName is empty")
+	}
 	dbPass := os.Getenv("DB_PASSWORD")
+	if dbPass == "" {
+		logrus.Info("dbPass is empty")
+	}
 	sslMode := os.Getenv("SSL_MODE")
+	if sslMode == "" {
+		logrus.Info("sslMode is empty")
+	}
 
 	data.Db, err = sql.Open(driver, fmt.Sprintf(
 		"host=%s user=%s dbname=%s password=%s sslmode=%s",

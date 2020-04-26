@@ -5,21 +5,14 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"os"
 )
 
 var (
 	bot *tgbotapi.BotAPI
-	key string
 )
 
 func init() {
 	var err error
-
-	key = os.Getenv("APIKEY")
-	if key == "" {
-		logrus.Error("$APIKEY is empty")
-	}
 
 	bot, err = tgbotapi.NewBotAPI("1258072778:AAG86IhHoDKRG-aKQgnEqoOJPLr3Migiuto")
 	if err != nil {

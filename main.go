@@ -48,10 +48,11 @@ func init() {
 }
 
 func main() {
+	logrus.Info("starting bot")
 	updates := bot.ListenForWebhook("/InversorTelegramBot/")
 
 	for update := range updates {
-
+		logrus.Infof("%#v", update)
 		if update.InlineQuery != nil {
 			if len(update.InlineQuery.Query) >= 4 {
 				results, err := GetResultList(update.InlineQuery)

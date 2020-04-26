@@ -49,7 +49,7 @@ func InitDb() error {
 	if dbName == "" {
 		logrus.Info("dbName is empty")
 	}
-	dbPass := os.Getenv("DB_PASSWORD")
+	dbPass := os.Getenv("DB_PASS")
 	if dbPass == "" {
 		logrus.Info("dbPass is empty")
 	}

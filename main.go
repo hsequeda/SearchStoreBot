@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	bot       *tgbotapi.BotAPI
-	key       string
+	bot *tgbotapi.BotAPI
+	key string
 )
 
 func init() {
@@ -20,7 +20,6 @@ func init() {
 	if key == "" {
 		logrus.Error("$APIKEY is empty")
 	}
-
 
 	bot, err = tgbotapi.NewBotAPI("1258072778:AAG86IhHoDKRG-aKQgnEqoOJPLr3Migiuto")
 	if err != nil {
@@ -61,7 +60,7 @@ func main() {
 				if err != nil {
 					continue
 				}
-
+				logrus.Info(resp)
 
 			}
 

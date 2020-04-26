@@ -45,7 +45,10 @@ func main() {
 	updates := bot.ListenForWebhook("/InversorTelegramBot/")
 
 	for update := range updates {
-		logrus.Infof("%#v", update)
+		if update.Message != nil {
+			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😠"))
+			continue
+		}
 		if update.InlineQuery != nil {
 			if len(update.InlineQuery.Query) >= 4 {
 				results, err := GetResultList(update.InlineQuery)
@@ -62,7 +65,6 @@ func main() {
 				logrus.Info(resp)
 
 			}
-
 		}
 
 	}

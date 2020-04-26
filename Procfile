@@ -1,1 +1,1 @@
-web: SearchStoreBot
+web: searchStoreBot

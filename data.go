@@ -51,7 +51,7 @@ func InitDb() error {
 		GET: {q: "select municipality, name, address, department, latitude, longitude, map_url, phone," +
 			" open_hour, close_hour from \"store\" where id=$1;"},
 		GET_MATCH_RAWDATA: {q: "select  municipality, name, address, department, latitude, longitude, map_url, phone," +
-			" open_hour, close_hour from \"store\" where raw_data like '%' || $1 || '%';"},
+			" open_hour, close_hour from store where raw_data like '%' || $1 || '%';"},
 		INSERT: {q: "Insert into \"store\" ( municipality, name, address, department, latitude, longitude, map_url," +
 			" phone, open_hour, close_hour, raw_data) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 );"},
 		UPDATE: {q: "update \"store\" set municipality=$2, name=$3, address=$4, department=$5, latitude=$6, longitude=$7," +

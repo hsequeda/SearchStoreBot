@@ -59,20 +59,18 @@ func main() {
 		}
 		if update.InlineQuery != nil {
 			if len(update.InlineQuery.Query) >= 4 {
-				logrus.Info(" QueryUpdate: ", update)
+				logrus.Info(" QueryUpdate: ", update.InlineQuery)
 				results, err := GetResultList(update.InlineQuery)
 				if err != nil {
 					continue
 				}
-				resp, err := bot.AnswerInlineQuery(tgbotapi.InlineConfig{
+				_, err = bot.AnswerInlineQuery(tgbotapi.InlineConfig{
 					InlineQueryID: update.InlineQuery.ID,
 					Results:       results,
 				})
 				if err != nil {
 					continue
 				}
-				logrus.Info("Response: ", resp)
-
 			}
 		}
 
@@ -81,8 +79,11 @@ func main() {
 
 func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 	var resultList = make([]interface{}, 0)
-	rawData := strings.Trim(strings.ToLower(inlineQuery.Query), " \n\t\f\r!?#$%&'\"()*+,-./:;<=>@[\\^_`{|}~]")
-	logrus.Println("RawData: ", rawData)
+	replacer := strings.NewReplacer(" ", "", "\n", "", "\t", "", "\f", "", "\r", "", "!", "", "?", "", "#", "",
+		"$", "", "%", "", "&", "", "'", "", "\"", "", "(", "", ")", "", "*", "", "+", "", ",", "", "-", "", ".", "", "/",
+		"", ":", "", ";", "", "<", "", "=", "", ">", "", "@", "", "[", "", "^", "", "_", "", "`", "", "{", "", "|", "",
+		"}", "", "~", "", "]", "", "\\", "")
+	rawData := replacer.Replace(strings.ToLower(inlineQuery.Query))
 	storeList, err := data.GetWhenMatchWithRawData(rawData)
 	if err != nil {
 		return nil, err

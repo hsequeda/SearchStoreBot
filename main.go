@@ -49,21 +49,20 @@ func main() {
 	updates := bot.ListenForWebhook("/" + bot.Token)
 	go http.ListenAndServe("0.0.0.0:"+port, nil)
 	for update := range updates {
-		if update.Message != nil {
-			_, err := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😡"))
+		switch {
+		case update.Message != nil:
+			_, err := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recibe mensajes 😡"))
 			if err != nil {
 				logrus.Warn(err)
 			}
-
-			continue
-		}
-		if update.InlineQuery != nil {
+		case update.InlineQuery != nil:
 			if len(update.InlineQuery.Query) >= 4 {
 				logrus.Info(" QueryUpdate: ", update.InlineQuery)
 				results, err := GetResultList(update.InlineQuery)
 				if err != nil {
 					continue
 				}
+
 				_, err = bot.AnswerInlineQuery(tgbotapi.InlineConfig{
 					InlineQueryID: update.InlineQuery.ID,
 					Results:       results,
@@ -73,7 +72,6 @@ func main() {
 				}
 			}
 		}
-
 	}
 }
 

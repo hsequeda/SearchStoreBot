@@ -92,7 +92,7 @@ func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 	for i := range storeList {
 		msgText := fmt.Sprintf(
 			`
-			Tienda: %s,
+			 Tienda: %s,
 			Municipio: %s,
 			Reparto: %s,
 			Telefono: %s,

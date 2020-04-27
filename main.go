@@ -82,6 +82,7 @@ func main() {
 func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 	var resultList = make([]interface{}, 0)
 	rawData := strings.Trim(strings.ToLower(inlineQuery.Query), " \n\t\f\r!?#$%&'\"()*+,-./:;<=>@[\\^_`{|}~]")
+	logrus.Println("RawData: ", rawData)
 	storeList, err := data.GetWhenMatchWithRawData(rawData)
 	if err != nil {
 		return nil, err

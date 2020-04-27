@@ -50,7 +50,7 @@ func main() {
 	go http.ListenAndServe("0.0.0.0:"+port, nil)
 	for update := range updates {
 		if update.Message != nil {
-			_, err := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😠"))
+			_, err := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😡"))
 			if err != nil {
 				logrus.Warn(err)
 			}
@@ -91,14 +91,15 @@ func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 
 	for i := range storeList {
 		msgText := fmt.Sprintf(
-			`Tienda: %s,
-			Municipio: %s,
+			`
+			<b>Tienda 🏬🏬: %s</b>
+			Municipio : %s,
 			Reparto: %s,
-			Telefono: %s,
+			Telefono☎️: %s,
 			Horario: ( %s - %s ),
 			Direccion: %s,
 			Localizacion: ( %f, %f ),
-			<a href="%s">Ver en Mapa</a>.
+			<a href="%s">Ver en Mapa🗺</a>.
 			`,
 			storeList[i].Name, storeList[i].Municipality, storeList[i].Department, storeList[i].Phone, storeList[i].Open,
 			storeList[i].Close, storeList[i].Address, storeList[i].Geolocation.Latitude, storeList[i].Geolocation.Longitude,

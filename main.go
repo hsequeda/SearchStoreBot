@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var (
@@ -49,11 +50,16 @@ func main() {
 	go http.ListenAndServe("0.0.0.0:"+port, nil)
 	for update := range updates {
 		if update.Message != nil {
-			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😠"))
+			_, err := bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Este bot no recive mensaje 😠"))
+			if err != nil {
+				logrus.Warn(err)
+			}
+
 			continue
 		}
 		if update.InlineQuery != nil {
 			if len(update.InlineQuery.Query) >= 4 {
+				logrus.Info(" QueryUpdate: ", update)
 				results, err := GetResultList(update.InlineQuery)
 				if err != nil {
 					continue
@@ -65,7 +71,7 @@ func main() {
 				if err != nil {
 					continue
 				}
-				logrus.Info(resp)
+				logrus.Info("Response: ", resp)
 
 			}
 		}
@@ -75,7 +81,8 @@ func main() {
 
 func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 	var resultList = make([]interface{}, 0)
-	storeList, err := data.GetWhenMatchWithRawData(inlineQuery.Query)
+	rawData := strings.Trim(strings.ToLower(inlineQuery.Query), " \n\t\f\r!?#$%&'\"()*+,-./:;<=>@[\\^_`{|}~]")
+	storeList, err := data.GetWhenMatchWithRawData(rawData)
 	if err != nil {
 		return nil, err
 	}
@@ -83,19 +90,19 @@ func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 	for i := range storeList {
 		msgText := fmt.Sprintf(
 			`
+			Tienda: %s,
 			Municipio: %s,
 			Reparto: %s,
 			Telefono: %s,
 			Horario: ( %s - %s ),
 			Direccion: %s,
 			Localizacion: ( %f, %f ),
-			Ubicacion: <a href="%s"></a>.
+			<a href="%s">Ver en Mapa</a>.
 			`,
-			storeList[i].Municipality, storeList[i].Department, storeList[i].Phone, storeList[i].Open, storeList[i].Close,
-			storeList[i].Address, storeList[i].Geolocation.Latitude, storeList[i].Geolocation.Latitude, storeList[i].MapUrl)
-
+			storeList[i].Name, storeList[i].Municipality, storeList[i].Department, storeList[i].Phone, storeList[i].Open,
+			storeList[i].Close, storeList[i].Address, storeList[i].Geolocation.Latitude, storeList[i].Geolocation.Longitude,
+			storeList[i].MapUrl)
 		inlineQueryResult := tgbotapi.NewInlineQueryResultArticleHTML(uuid.New().String(), storeList[i].Name, msgText)
-
 		resultList = append(resultList, inlineQueryResult)
 	}
 	return resultList, err

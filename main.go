@@ -44,10 +44,13 @@ func init() {
 }
 
 func main() {
-	logrus.Info("starting bot")
 	port := os.Getenv("PORT")
+
+	logrus.Info("starting bot")
+
 	updates := bot.ListenForWebhook("/" + bot.Token)
 	go http.ListenAndServe("0.0.0.0:"+port, nil)
+
 	for update := range updates {
 		switch {
 		case update.Message != nil:
@@ -57,8 +60,7 @@ func main() {
 			}
 		case update.InlineQuery != nil:
 			if len(update.InlineQuery.Query) >= 4 {
-				logrus.Info(" QueryUpdate: ", update.InlineQuery)
-				results, err := GetResultList(update.InlineQuery)
+				results, err := GetInlineQueryResultList(update.InlineQuery.Query)
 				if err != nil {
 					continue
 				}
@@ -75,13 +77,14 @@ func main() {
 	}
 }
 
-func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
+// GetInlineQueryResultList generate a list of InlineQueryResults by a query
+func GetInlineQueryResultList(query string) ([]interface{}, error) {
 	var resultList = make([]interface{}, 0)
-	replacer := strings.NewReplacer(" ", "", "\n", "", "\t", "", "\f", "", "\r", "", "!", "", "?", "", "#", "",
-		"$", "", "%", "", "&", "", "'", "", "\"", "", "(", "", ")", "", "*", "", "+", "", ",", "", "-", "", ".", "", "/",
-		"", ":", "", ";", "", "<", "", "=", "", ">", "", "@", "", "[", "", "^", "", "_", "", "`", "", "{", "", "|", "",
-		"}", "", "~", "", "]", "", "\\", "")
-	rawData := replacer.Replace(strings.ToLower(inlineQuery.Query))
+	replacer := strings.NewReplacer(" ", "", "\n", "", "\t", "", "\f", "", "\r", "",
+		"!", "", "?", "", "#", "", "$", "", "%", "", "&", "", "'", "", "\"", "", "(", "", ")", "",
+		"*", "", "+", "", ",", "", "-", "", ".", "", "/", "", ":", "", ";", "", "<", "", "=", "", ">",
+		"", "@", "", "[", "", "^", "", "_", "", "`", "", "{", "", "|", "", "}", "", "~", "", "]", "", "\\", "")
+	rawData := replacer.Replace(strings.ToLower(query))
 	storeList, err := data.GetWhenMatchWithRawData(rawData)
 	if err != nil {
 		return nil, err
@@ -91,13 +94,13 @@ func GetResultList(inlineQuery *tgbotapi.InlineQuery) ([]interface{}, error) {
 		msgText := fmt.Sprintf(
 			`
 			<b>🏬Tienda :%s</b>
-			Municipio : %s
-			Reparto: %s
-			☎️Telefono: %s
-			Horario: ( %s - %s )
-			Direccion: %s
-			Localizacion: ( %f, %f )
-			<a href="%s">🗺Ver en Mapa</a>.
+			-> Municipio : %s
+			-> Reparto: %s
+			-> ☎️Telefono: %s
+			-> Horario: ( %s - %s )
+			-> Direccion: %s
+			-> Localizacion: ( %f, %f )
+			-> <a href="%s">🗺Ver en Mapa</a>.
 			`,
 			storeList[i].Name, storeList[i].Municipality, storeList[i].Department, storeList[i].Phone, storeList[i].Open,
 			storeList[i].Close, storeList[i].Address, storeList[i].Geolocation.Latitude, storeList[i].Geolocation.Longitude,
